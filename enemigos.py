@@ -1,36 +1,65 @@
 import pygame, random
 
-
 class Enemigo():
     def __init__(self, nombre, vida):
         self.nombre = nombre
-        self.vida = vida
-
+        self.vida = vida    
 
 class OrcoRojo(Enemigo):
     def __init__(self):
         super().__init__("Orco Rojo", 100)
 
-
-class esqueletoNegro(Enemigo):
+class Carnicero(Enemigo):
     def __init__(self):
-        super().__init__("Esqueleto Negro", 100)
+        super().__init__("Carnicero", 100)
 
+class MinotauroNaranja(Enemigo):
+    def __init__(self):
+        super().__init__("Minotauro Naranja", 100)
 
-orco = OrcoRojo()
-esqueleto_negro= esqueletoNegro()
+class Jokai(Enemigo):
+    def __init__(self):
+        super().__init__("Jokai", 100)
 
-enemigos = [OrcoRojo, esqueletoNegro]
+class HombreLoboRojo(Enemigo):
+    def __init__(self):
+        super().__init__("HombreLoboRojo", 100)
+
+class Mago(Enemigo):
+    def __init__(self):
+        super().__init__("Mago", 100)
+
+class Cthulhu(Enemigo):
+    def __init__(self):
+        super().__init__("Cthulhu", 100)
+
+class Cerbero(Enemigo):
+    def __init__(self):
+        super().__init__("Cerbero", 100)
+
+class OrcoRojo2(Enemigo):
+    def __init__(self):
+        super().__init__("Orco Rojo 2", 100)
+
+class Demonio(Enemigo):
+    def __init__(self):
+        super().__init__("Demonio", 100)
+
+class CaballeroInfernal(Enemigo):
+    def __init__(self):
+        super().__init__("Caballero Infernal", 100)
+
+class Dragon(Enemigo):
+    def __init__(self):
+        super().__init__("Dragon", 100)
+
+enemigos_normales = [OrcoRojo, MinotauroNaranja, Jokai, HombreLoboRojo, Demonio, Dragon]
+enemigos_jefes = [Carnicero, Cthulhu, Cerbero, OrcoRojo2, CaballeroInfernal]
 
 def crear_enemigos():
-    enemigo = random.choice(enemigos)
+    enemigo = random.choice(enemigos_normales)
     v_ataque = 5
-    spawn = USEREVENT.
     while enemigo.vida != 0:
         pygame.time.set_timer()
-        pass
-crear_enemigos()
 
-def hola():
-    print("Hola")
-    
+        pass
