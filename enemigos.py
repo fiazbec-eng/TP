@@ -22,8 +22,11 @@ esqueleto_negro= esqueletoNegro()
 
 enemigos = [OrcoRojo, esqueletoNegro]
 
-def crear_enemigos(x):
+def crear_enemigos():
     enemigo = random.choice(enemigos)
-    while vida:
+    v_ataque = 5
+    spawn = 
+    while enemigo.vida != 0:
+        pygame.time.set_timer()
         pass
-crear_enemigos(enemigo)
+crear_enemigos()
