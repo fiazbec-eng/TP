@@ -1,3 +1,4 @@
+
 import pygame
 
 pygame.init()
@@ -7,6 +8,9 @@ HEIGHT = 700
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Beat Em Up")
+
+background = pygame.image.load("fondos/fondo.png").convert()
+background = pygame.transform.scale(background, (WIDTH, HEIGHT))
 
 clock = pygame.time.Clock()
 
@@ -21,10 +25,17 @@ class Player:
 
         self.direction = "right"
 
+        self.gravity = 0.7
+        self.jump_power = -14
+        self.velocity_y = 0
+        self.on_ground = False
+
         self.attacking = False
         self.attack_timer = 0
+
         self.attack_cooldown = 0
         self.attack_cooldown_time = 0.3
+
         self.has_hit = False
 
         self.hurtbox = pygame.Rect(
@@ -36,6 +47,7 @@ class Player:
         )
 
     def update(self, dt):
+
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_a]:
@@ -46,20 +58,21 @@ class Player:
             self.rect.x += self.speed
             self.direction = "right"
 
-        if keys[pygame.K_w]:
-            self.rect.y -= self.speed
+        self.velocity_y += self.gravity
+        self.rect.y += self.velocity_y
 
-        if keys[pygame.K_s]:
-            self.rect.y += self.speed
+        ground_y = HEIGHT - self.rect.height
+
+        if self.rect.y >= ground_y:
+            self.rect.y = ground_y
+            self.velocity_y = 0
+            self.on_ground = True
+        else:
+            self.on_ground = False
 
         self.rect.x = max(
             0,
             min(WIDTH - self.rect.width, self.rect.x)
-        )
-
-        self.rect.y = max(
-            10,
-            min(590 - self.rect.height, self.rect.y)
         )
 
         self.hurtbox.topleft = self.rect.topleft
@@ -74,7 +87,6 @@ class Player:
                     self.rect.right,
                     self.rect.y + 20
                 )
-
             else:
                 self.hitbox.topleft = (
                     self.rect.left - 50,
@@ -86,9 +98,16 @@ class Player:
             if self.attack_timer <= 0:
                 self.attacking = False
                 self.has_hit = False
+
                 self.hitbox = pygame.Rect(
                     0, 0, 0, 0
                 )
+
+    def jump(self):
+
+        if self.on_ground:
+            self.velocity_y = self.jump_power
+            self.on_ground = False
 
     def attack(self):
 
@@ -161,10 +180,14 @@ class Enemy:
         )
 
         self.speed = 2
+
         self.health = 120
         self.max_health = 120
 
         self.direction = "left"
+
+        self.gravity = 0.7
+        self.velocity_y = 0
 
         self.hurtbox = pygame.Rect(
             x, y, 60, 90
@@ -192,20 +215,19 @@ class Enemy:
             self.rect.x -= self.speed
             self.direction = "left"
 
-        if self.rect.y < player.rect.y:
-            self.rect.y += self.speed
+        self.velocity_y += self.gravity
+        self.rect.y += self.velocity_y
 
-        elif self.rect.y > player.rect.y:
-            self.rect.y -= self.speed
+        ground_y = HEIGHT - self.rect.height
+
+        if self.rect.y >= ground_y:
+
+            self.rect.y = ground_y
+            self.velocity_y = 0
 
         self.rect.x = max(
             0,
             min(WIDTH - self.rect.width, self.rect.x)
-        )
-
-        self.rect.y = max(
-            10,
-            min(590 - self.rect.height, self.rect.y)
         )
 
         self.hurtbox.topleft = self.rect.topleft
@@ -218,12 +240,7 @@ class Enemy:
             player.rect.centerx
         )
 
-        distance_y = abs(
-            self.rect.centery -
-            player.rect.centery
-        )
-
-        if distance_x < 100 and distance_y < 80:
+        if distance_x < 100:
 
             if not self.attacking:
                 self.attack()
@@ -315,8 +332,8 @@ class Enemy:
             )
 
 
-player = Player(200, 200)
-enemy = Enemy(550, 200)
+player = Player(200, 300)
+enemy = Enemy(900, 300)
 
 player_damage = 20
 enemy_damage = 12
@@ -336,6 +353,9 @@ while running:
 
             if event.key == pygame.K_f:
                 player.attack()
+
+            if event.key == pygame.K_SPACE:
+                player.jump()
 
     player.update(dt)
 
@@ -361,7 +381,15 @@ while running:
 
                 enemy.has_hit = True
 
-    screen.fill((30, 30, 30))
+    screen.blit(background, (0, 0))
+
+    pygame.draw.line(
+        screen,
+        (100, 100, 100),
+        (0, HEIGHT - 1),
+        (WIDTH, HEIGHT - 1),
+        2
+    )
 
     player.draw()
     enemy.draw()
